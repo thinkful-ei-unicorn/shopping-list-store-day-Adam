@@ -1,9 +1,9 @@
 const store = {
   items: [
-    { id: cuid(), name: 'apples', checked: false },
-    { id: cuid(), name: 'oranges', checked: false },
-    { id: cuid(), name: 'milk', checked: true },
-    { id: cuid(), name: 'bread', checked: false }
+    { id: cuid(), name: 'apples', checked: false},
+    { id: cuid(), name: 'oranges', checked: false},
+    { id: cuid(), name: 'milk', checked: true},
+    { id: cuid(), name: 'bread', checked: false}
   ],
   hideCheckedItems: false
 };
@@ -12,8 +12,9 @@ const generateItemElement = function (item) {
   let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
-    `;
+    <form class="js-edit-item">
+     <input class='shopping-item' type="text" value='${item.name}'/>
+     </form>`;
   }
 
   return `
@@ -127,6 +128,11 @@ const handleDeleteItemClicked = function () {
   });
 };
 
+const editListItemName = function (id, itemName) {
+  const item = store.items.find(item => item.id === id);
+  item.name = itemName;
+}
+
 /**
  * Toggles the store.hideCheckedItems property
  */
@@ -145,6 +151,18 @@ const handleToggleFilterClick = function () {
   });
 };
 
+
+
+const handleEditShoppingItemSubmit = function () {
+  $('.js-shopping-list').on('submit', '.js-edit-item', event => {
+    event.preventDefault();
+    const id = getItemIdFromElement(event.currentTarget);
+    const itemName = $(event.currentTarget).find('.shopping-item').val();
+    editListItemName(id,itemName);
+    render();
+  })
+}
+
 /**
  * This function will be our callback when the
  * page loads. It is responsible for initially 
@@ -159,6 +177,7 @@ const handleShoppingList = function () {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  handleEditShoppingItemSubmit();
   handleToggleFilterClick();
 };
 
